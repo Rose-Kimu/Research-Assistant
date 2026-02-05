@@ -99,4 +99,5 @@ The combination of improved tool selection logic and comprehensive verification 
 
 
 **Contribution Statement:**
-This implementation represents group work demonstrating understanding of RAG architecture, external tool integration, ReAct reasoning, and verification systems as required for HW2.
+Rose worked on : Retrieval module and the tool calling module
+Maxime worked on :  The verification module and the ReAct style reasoning loop

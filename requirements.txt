@@ -1,5 +1,6 @@
 chromadb
 openai
+groq
 dotenv
 langchain_community
 langchain_text_splitters

@@ -1,10 +1,10 @@
-# fill_db.py
+# fill_db.py - Database Population Script
 import os
 import shutil
 import chromadb
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-import config  # Importing your central config
+import config
 
 def fill():
     """
@@ -21,8 +21,8 @@ def fill():
     try:
         chroma_client.delete_collection(name=config.COLLECTION_NAME)
         print("   - Existing collection cleared.")
-    except ValueError:
-        pass  # Collection didn't exist yet, which is fine.
+    except (ValueError, chromadb.errors.NotFoundError):
+        print("   - No existing collection to clear.")  # Collection didn't exist yet, which is fine.
 
     collection = chroma_client.get_or_create_collection(name=config.COLLECTION_NAME)
 

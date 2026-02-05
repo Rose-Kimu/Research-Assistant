@@ -1,7 +1,8 @@
 import sys
-import ask          # Refactored local RAG module
-import arxiv_agent  # Refactored online research module
-import fill_db      # Refactored database ingestion module
+import src.ask as ask          # Refactored local RAG module
+import src.arxiv_agent as arxiv_agent  # Refactored online research module
+import src.fill_db as fill_db      # Refactored database ingestion module
+import autonomy_agent
 
 def run_agent():
     print("==========================================")
@@ -13,7 +14,8 @@ def run_agent():
         print("1. Ask Local Database ")
         print("2. Search Online Papers (ArXiv)")
         print("3. Re-build Database (Ingest new PDFs)")
-        print("4. Exit")
+        print("4. Re-build Database (Ingest new PDFs)")
+        print("5. Exit")
         print("------------------------------------------")
         
         option = input("Select an option (1-4): ").strip()
@@ -83,9 +85,12 @@ def run_agent():
                 fill_db.fill()
             else:
                 print("Operation cancelled.")
-
-        # OPTION 4: Exit
+        # OPTION 3: Database Maintenance
         elif option == "4":
+            print("\n--- 🤖 Autonomous agent ---")
+            autonomy_agent.run_autonomous_agent()  
+        # OPTION 4: Exit
+        elif option == "5":
             print("Goodbye! ")
             sys.exit() # Clean exit
         

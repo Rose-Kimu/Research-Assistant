@@ -1,4 +1,4 @@
-# HW2 Technical Brief: Research-Focused RAG Agent
+# Technical Brief: Research-Focused RAG Agent
 
 **Course:** Agentic AI Fundamentals and Applications  
 **Assignment:** Building the Agent  
@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-This project implements a RAG-enabled agent for academic research assistance. The system combines three core modules: a retrieval system using ChromaDB, an ArXiv API tool for external paper search, and a dual verification system for groundedness scoring. The agent uses ReAct-style reasoning to decide between local database queries and external tool calls.
+This project implements a RAG-enabled agent for academic research assistance. The system combines three core modules: a retrieval system using ChromaDB, an ArXiv API tool for external paper search, and a two-step verification system for groundedness scoring. The agent uses ReAct-style reasoning to decide between local database queries and external tool calls.
 
 ## Tooling Rationale
 
@@ -55,25 +55,33 @@ TOOLS_INSTRUCTIONS = """
 The agent saw "multilingual sentiment analysis study" and interpreted this as a request to find research papers, rather than a question about specific content from existing documents.
 
 **Technical Adjustment Made:**
-We enhanced the tool selection prompt with explicit decision criteria and examples:
+We enhanced the tool selection logic with priority-based routing and explicit decision criteria:
 
 ```python
-# Fixed instructions
-TOOLS_INSTRUCTIONS = """
-1. [local_db]: Use this to answer questions about SPECIFIC content from documents we have stored locally. 
-   Use when the question asks about specific data, results, or details from existing research papers.
-   
-2. [arxiv_search]: Use this to find NEW research papers from ArXiv that are not in our local database.
-   Use when the question asks to "find papers", "search for research", or requests new/recent publications.
-
-DECISION RULES:
-- If question mentions "study", "paper", "research" AND asks about specific results/data → use [local_db]
-- If question asks to "find", "search", "recent papers" → use [arxiv_search]
-"""
+# Fixed routing logic
+# Priority 1: Explicit search requests go to ArXiv
+if any(word in user_query_lower for word in ["find", "search", "recent", "new"]):
+    action = "arxiv_search"
+# Priority 2: Questions about specific content go to local DB  
+elif any(word in user_query_lower for word in ["study", "research", "analysis", "multilingual", "computer vision", "bias", "ethics", "challenges", "findings", "summary", "about"]):
+    action = "local_db"
+# Priority 3: General "papers" requests go to ArXiv
+elif "papers" in user_query_lower:
+    action = "arxiv_search"
 ```
 
+This priority-based system ensures that:
+1. Explicit search intent ("find", "search", "recent", "new") always goes to ArXiv
+2. Content-specific questions go to local database first
+3. General paper requests default to ArXiv search
+
 **Results After Fix:**
-After this change, the agent correctly identified that "What languages were tested in the multilingual sentiment analysis study?" was asking for specific data from existing documents, not requesting new paper searches. The success rate for correct tool selection improved from about 60% to 95% for local queries.
+After implementing the priority-based routing system, the agent correctly identified that "What languages were tested in the multilingual sentiment analysis study?" was asking for specific data from existing documents, not requesting new paper searches. The success rate for correct tool selection improved  for local queries.
+
+The new system handles edge cases better:
+- "Find papers on computer vision challenges" → ArXiv (explicit search intent)
+- "What are the challenges in computer vision?" → Local DB (content-specific question)
+- "Give me a summary of the bias study" → Local DB (specific content request)
 
 **Additional Verification Enhancement:**
 This failure also highlighted the need for better verification of tool outputs. We added re-verification after self-correction and implemented the dual groundedness system to catch similar issues across both local and external data sources.
@@ -81,14 +89,14 @@ This failure also highlighted the need for better verification of tool outputs. 
 ## System Performance
 
 The final system demonstrates:
-- **Tool Selection Accuracy**: 95% for local queries, 90% for ArXiv queries
+- **Tool Selection Accuracy**: for both local queries and ArXiv queries
 - **Verification Coverage**: 100% of responses receive groundedness scores
 - **Self-Correction**: Automatically improves responses with scores below 0.7
 - **Dual Verification**: Both local database and ArXiv tool outputs are verified
 
 The combination of improved tool selection logic and comprehensive verification ensures the agent provides reliable, grounded responses for academic research assistance.
 
----
+
 
 **Contribution Statement:**
 This implementation represents group work demonstrating understanding of RAG architecture, external tool integration, ReAct reasoning, and verification systems as required for HW2.

@@ -1,6 +1,6 @@
 # Research-Focused RAG Agent - HW2 Implementation
 
-This project implements a comprehensive RAG-enabled agent for academic research assistance, fulfilling all requirements for HW2 of the Agentic AI course with advanced dual groundedness verification.
+This project implements a  RAG-enabled agent for academic research assistance with groundedness verification.
 
 ## Architecture Overview
 
@@ -8,9 +8,9 @@ The system consists of three core modules with enhanced verification:
 
 1. **Retrieval Module (Memory)** - ChromaDB vector database with research papers
 2. **Tool-Calling Module** - ArXiv API integration for real-time paper discovery  
-3. **Verification Module (Guardrails)** - Dual evidence scoring for local and external data
+3. **Verification Module (Guardrails)** - Evidence scoring for local and external data
 
-## Advanced Groundedness System
+## Groundedness System
 
 ### Local Database Verification
 - **Evidence Support Score:** Verifies claims against document chunks
@@ -35,12 +35,7 @@ pip install -r requirements.txt
    GROQ_API_KEY=your_actual_groq_api_key_here
    ```
 
-2. Generate research documents:
-   ```bash
-   python generatePDFs.py
-   ```
-
-3. Populate the vector database:
+2. Populate the vector database:
    ```bash
    python fill_db.py
    ```
@@ -62,7 +57,7 @@ python ask.py
 python hw2_automated_demo.py
 ```
 
-## HW2 Requirements Compliance
+## Project Modules
 
 ### 1. Retrieval Module 
 - **Domain-Specific Ingestion:** Research papers in ChromaDB
@@ -92,7 +87,6 @@ python hw2_automated_demo.py
 - `arxiv_agent.py` - ArXiv API tool + ArXiv verification
 - `design.py` - Main ReAct agent with tool selection
 - `fill_db.py` - Database ingestion
-- `generatePDFs.py` - Research document generation
 - `hw2_automated_demo.py` - Complete system demonstration
 - `HW2_Technical_Brief.md` - Technical documentation
 
@@ -117,20 +111,14 @@ Try these queries to see different verification systems in action:
 
 ## Technical Highlights
 
-- **LLM:** Groq OpenAI GPT-OSS-120B for fast inference
+- **LLM:** Llama 3.3 70B hosted on Groq for fast inference
 - **Vector DB:** ChromaDB with persistent storage
 - **Chunking:** Context-preserving strategy for research content
 - **Dual Verification:** Evidence scoring for both local and external data
 - **Tool Selection:** ReAct-style reasoning with explicit decision criteria
 - **Transparency:** Complete verification traces for all responses
 
-## Performance Metrics
 
-- **Local Evidence Support Score:** Average > 0.8
-- **ArXiv Evidence Support Score:** Average > 0.75
-- **Tool Selection Accuracy:** 95% for local queries, 90% for ArXiv
-- **Verification Coverage:** 100% of responses scored and validated
-- **Response Time:** < 5 seconds including dual verification
 
 ## Verification System Features
 
@@ -166,7 +154,7 @@ The agent shows clear decision-making:
 
 ## Implementation Details
 
-The system initially had issues with tool selection - choosing ArXiv for local document queries. This was resolved by enhancing the reasoning prompt with explicit decision criteria and adding comprehensive verification for both data sources.
+The system initially had issues with tool selection - it choosing ArXiv for local document queries instead of using documents in locan storage. This was resolved by enhancing the reasoning prompt with explicit decision criteria and adding stricter verification for both data sources.
 
 See `HW2_Technical_Brief.md` for detailed technical analysis and implementation decisions.
 
